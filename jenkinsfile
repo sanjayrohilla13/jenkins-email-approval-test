@@ -14,7 +14,7 @@
                        approve or Reject''',
                        mimeType: 'text/html',
                        subject: "[Jenkins] Started ${jobName}",
-                       from: "${useremail}"
+                       from: "${useremail}",
                        to: "${mailRecipients}",
                        replyTo: "${mailRecipients}",
                        recipientProviders: [[$class: 'CulpritsRecipientProvider']]
