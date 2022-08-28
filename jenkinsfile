@@ -1,4 +1,4 @@
-pipeline {
+ pipeline {
     agent any
 
     stages {
@@ -8,10 +8,13 @@ pipeline {
                script {
                    def mailRecipients = 'sanjayrohilla@gmail.com'
                    def jobName = currentBuild.fullDisplayName
+                   def useremail = 'sanjay400@gmail.com'
                    //emailext body: '''${SCRIPT, template="groovy-html.template"}''',
-                   emailext body: '''Hello''',
-                       mimeTye: 'text/html',
+                       emailext body: '''Please go to console Output of ${BUILD_URL} input to 
+                       approve or Reject''',
+                       mimeType: 'text/html',
                        subject: "[Jenkins] Started ${jobName}",
+                       from: "${useremail}"
                        to: "${mailRecipients}",
                        replyTo: "${mailRecipients}",
                        recipientProviders: [[$class: 'CulpritsRecipientProvider']]
@@ -29,12 +32,12 @@ pipeline {
                 '''
             }
         }
-          stage('Stage 2'){
+        stage('Stage 2'){
             steps {
                 echo 'Stage 2..'
             }
         }
-                stage('Stage 3'){
+        stage('Stage 3'){
             steps {
                 echo 'Stage 3..'
             }
