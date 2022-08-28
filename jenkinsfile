@@ -1,0 +1,86 @@
+pipeline {
+    agent any
+
+    stages {
+        
+       stage('PreBuild-Email') {
+           steps {
+               script {
+                   def mailRecipients = 'sanjayrohilla@gmail.com'
+                   def jobName = currentBuild.fullDisplayName
+                   //emailext body: '''${SCRIPT, template="groovy-html.template"}''',
+                   emailext body: '''Hello''',
+                       mimeTye: 'text/html',
+                       subject: "[Jenkins] Started ${jobName}",
+                       to: "${mailRecipients}",
+                       replyTo: "${mailRecipients}",
+                       recipientProviders: [[$class: 'CulpritsRecipientProvider']]
+        }
+    }
+}
+        
+        stage('Code Checkout'){
+            steps {
+                echo 'Fetching Source Code..'
+                git credentialsId: 'user-creds', url: 'https://github.com/sanjayrohilla13/coles-code-challenge.git'
+                sh '''
+                    pwd
+                    echo 'fetching code'
+                '''
+            }
+        }
+          stage('Stage 2'){
+            steps {
+                echo 'Stage 2..'
+            }
+        }
+                stage('Stage 3'){
+            steps {
+                echo 'Stage 3..'
+            }
+        }
+        
+        // stage('Email') {
+        //     steps {
+        //         echo 'Sending Email to Engineering Team'
+        //         emailext body: 'Successfully Build  and Push Docker image', subject: 'Successfully Build  and Push Docker image', to: 'admin@gmail.com'
+                
+        //     }
+        // }
+    }
+    
+    //     post {
+    //     always {
+    //         emailext body: 'Successfully Build  and Push Docker image', subject: 'Successfully Build  and Push Docker image', to: 'admin@gmail.com'
+    //     }
+    // }
+    
+        environment {
+        EMAIL_TO = 'sanjayrohilla@gmail.com'
+    }
+post {
+        
+        success {
+            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                    to: "${EMAIL_TO}", 
+                    subject: 'Build Success in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+        }
+        
+        failure {
+            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                    to: "${EMAIL_TO}", 
+                    subject: 'Build failed in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+        }
+        unstable {
+            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                    to: "${EMAIL_TO}", 
+                    subject: 'Unstable build in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+        }
+        changed {
+            emailext body: 'Check console output at $BUILD_URL to view the results.', 
+                    to: "${EMAIL_TO}", 
+                    subject: 'Jenkins build is back to normal: $PROJECT_NAME - #$BUILD_NUMBER'
+        }
+    }
+       
+}
