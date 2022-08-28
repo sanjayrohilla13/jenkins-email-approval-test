@@ -22,7 +22,7 @@ pipeline {
         stage('Code Checkout'){
             steps {
                 echo 'Fetching Source Code..'
-                git credentialsId: 'user-creds', url: 'https://github.com/sanjayrohilla13/coles-code-challenge.git'
+                git credentialsId: 'user-creds', url: 'https://github.com/sanjayrohilla13/jenkins-email-approval-test.git'
                 sh '''
                     pwd
                     echo 'fetching code'
